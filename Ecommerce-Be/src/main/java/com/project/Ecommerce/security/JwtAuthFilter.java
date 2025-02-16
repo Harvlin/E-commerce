@@ -1,4 +1,4 @@
-package com.project.Ecommerce.securiry;
+package com.project.Ecommerce.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -22,30 +22,36 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
-    private final CustomUserDetailsService customUserDetailsService;
+    private final  CustomUserDetailsService customUserDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
         String token = getTokenFromRequest(request);
-        if (token != null) {
+
+        if (token != null){
             String username = jwtUtils.getUsernameFromToken(token);
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
-            if (StringUtils.hasText(username) && jwtUtils.isTokenValid(token, userDetails)) {
-                log.info("User logged in successfully");
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                        username, null, userDetails.getAuthorities()
+
+            if (StringUtils.hasText(username) && jwtUtils.isTokenValid(token, userDetails)){
+                log.info("VALID JWT FOR {}", username);
+
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities()
                 );
-                usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
+
         }
         filterChain.doFilter(request, response);
     }
 
-    private String getTokenFromRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
+    private String getTokenFromRequest(HttpServletRequest request){
+        String token = request.getHeader("Authorization");
+        if (StringUtils.hasText(token) && StringUtils.startsWithIgnoreCase(token, "Bearer ")){
+            return token.substring(7);
         }
         return null;
     }

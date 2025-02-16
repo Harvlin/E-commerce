@@ -1,0 +1,6 @@
+AuthUser.java → Wraps the UserEntity into a UserDetails object for authentication.
+CorsConfig.java → Configures CORS (Cross-Origin Resource Sharing) to allow frontend applications to make API requests.
+CustomUserDetailsService.java → Loads user details from the database based on email.
+JwtAuthFilter.java → Extracts and validates JWT tokens from incoming requests.
+JwtUtils.java → Generates and verifies JWT tokens.
+SecurityConfig.java → Defines security rules, disabling CSRF, setting session policies, and adding the JWT filter.

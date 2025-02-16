@@ -1,4 +1,4 @@
-package com.project.Ecommerce.securiry;
+package com.project.Ecommerce.security;
 
 import com.project.Ecommerce.domain.entity.UserEntity;
 import lombok.Builder;
