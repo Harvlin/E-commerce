@@ -32,14 +32,22 @@ public class UserEntity {
 
     @Column(unique = true, name = "phone_number", nullable = false)
     private String phoneNumber;
+
+    @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<OrderItemEntity> orderItemList;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id")
     private AddressEntity address;
 
-    @Column(name = "created_at")
-    private final LocalDateTime createdAt = LocalDateTime.now();
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 }

@@ -8,6 +8,13 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,10 +41,14 @@ public class AddressEntity {
     @Column(nullable = false)
     private String country;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @OneToOne(mappedBy = "address", fetch = FetchType.LAZY)
     private UserEntity userEntity;
 
-    @Column(name = "created_at")
-    private final LocalDateTime createdAt = LocalDateTime.now();
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 }

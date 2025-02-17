@@ -15,11 +15,19 @@ public class OrderEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private BigDecimal totalPrice;
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY,  cascade = CascadeType.ALL, orphanRemoval = true)
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity user; // Added this relation
+
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItemEntity> orderItemList;
 
-    @Column(name = "created_at")
-    private final LocalDateTime createdAt = LocalDateTime.now();
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
-    //PAYMENT
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 }

@@ -1,5 +1,6 @@
 package com.project.Ecommerce.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
@@ -15,16 +16,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddressDto {
-
     private Long id;
-
     private String street;
     private String city;
     private String state;
     private String zipCode;
     private String country;
 
+    @JsonIgnore // Prevents infinite recursion
     private UserDto user;
-
-    private LocalDateTime createdAt;
 }
